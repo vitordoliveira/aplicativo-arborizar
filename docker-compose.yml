@@ -1,0 +1,26 @@
+services:
+  # Serviço do Banco de Dados PostgreSQL com a extensão PostGIS
+  db:
+    image: postgis/postgis:15-3.4  # Imagem otimizada que já inclui o PostGIS
+    container_name: arborizar_db
+    restart: always
+    ports:
+      - "5433:5432" # Expõe a porta do container para a sua máquina local
+    environment:
+      - POSTGRES_USER=arborizar_user
+      - POSTGRES_PASSWORD=${DB_PASSWORD} # Carrega a senha de um arquivo .env por segurança
+      - POSTGRES_DB=arborizar_db
+    volumes:
+      - arborizar-pgdata:/var/lib/postgresql/data # Garante que os dados persistam mesmo que o container seja recriado
+
+  # Serviço opcional, mas altamente recomendado: uma interface gráfica para o banco de dados
+  adminer:
+    image: adminer
+    container_name: arborizar_adminer
+    restart: always
+    ports:
+      - "8080:8080" # Acessível em http://localhost:8080
+
+# Define o volume nomeado para persistir os dados do banco
+volumes:
+  arborizar-pgdata:
