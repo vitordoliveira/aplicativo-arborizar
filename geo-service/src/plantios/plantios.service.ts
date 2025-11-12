@@ -18,22 +18,27 @@ export class PlantiosService {
     private readonly rabbitClient: ClientProxy,
   ) {}
 
-  async create(createPlantioDto: CreatePlantioDto): Promise<Plantio> {
+  async create(
+    createPlantioDto: CreatePlantioDto,
+    idAluno: number, // ID do aluno vindo do token
+    authToken: string, // Token bruto
+  ): Promise<Plantio> {
     const especie = await this.especiesService.findOne(
       createPlantioDto.id_especie,
     );
 
-    // O novo campo 'id_aluno' do DTO já é incluído aqui pelo spread operator.
     const novoPlantio = this.plantioRepository.create({
       ...createPlantioDto,
       especie: especie,
+      id_aluno: idAluno, // Salva o ID do aluno vindo do token
     });
 
     const plantioSalvo = await this.plantioRepository.save(novoPlantio);
 
-    // O objeto 'plantioSalvo' agora contém o 'id_aluno' e será enviado no evento.
+    // Envia o evento com o plantio E o token
     this.rabbitClient.emit('plantio_registrado', {
       plantio: plantioSalvo,
+      authToken: authToken, // Adiciona o token à mensagem
     });
 
     return plantioSalvo;

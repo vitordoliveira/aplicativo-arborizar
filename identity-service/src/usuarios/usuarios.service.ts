@@ -8,6 +8,7 @@ import { Usuario } from './entities/usuario.entity';
 import { AddPontosDto } from './dto/add-pontos.dto';
 import * as bcrypt from 'bcrypt';
 import { Role } from '../common/enums/role.enum';
+import { UpdateUsuarioDto } from './dto/update-usuario.dto'; // 1. IMPORTAR
 
 @Injectable()
 export class UsuariosService {
@@ -22,14 +23,9 @@ export class UsuariosService {
       createUsuarioDto.password,
       saltRounds,
     );
-
     let novoUsuario: Usuario;
     const { tipo } = createUsuarioDto;
 
-    // --- CORREÇÃO DO ESLINT ABAIXO ---
-    // Desabilitamos a regra, pois sabemos que a comparação é segura.
-    // O DTO garante que 'tipo' é uma string ("aluno", "professor", "admin")
-    // e o Enum 'Role' também resolve para essas mesmas strings.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (tipo === Role.Aluno || tipo === Role.Professor) {
       novoUsuario = this.usuarioRepository.create({
@@ -43,7 +39,6 @@ export class UsuariosService {
       novoUsuario.password = hashedPassword;
       novoUsuario.tipo = tipo;
     }
-
     return this.usuarioRepository.save(novoUsuario);
   }
 
@@ -71,6 +66,31 @@ export class UsuariosService {
     const usuario = await this.findOne(id);
     usuario.pontos_totais += addPontosDto.pontos;
     usuario.xp_total += addPontosDto.xp;
+    return this.usuarioRepository.save(usuario);
+  }
+
+  // --- MÉTODO NOVO ADICIONADO ---
+  async update(
+    id: number,
+    updateUsuarioDto: UpdateUsuarioDto,
+  ): Promise<Usuario> {
+    // Se uma nova senha foi enviada, criptografa ela
+    if (updateUsuarioDto.password) {
+      const saltRounds = 10;
+      updateUsuarioDto.password = await bcrypt.hash(
+        updateUsuarioDto.password,
+        saltRounds,
+      );
+    }
+
+    // Carrega o usuário e aplica as mudanças
+    const usuario = await this.usuarioRepository.preload({
+      id_usuario: id,
+      ...updateUsuarioDto,
+    });
+    if (!usuario) {
+      throw new NotFoundException(`Usuário com ID #${id} não encontrado.`);
+    }
     return this.usuarioRepository.save(usuario);
   }
 

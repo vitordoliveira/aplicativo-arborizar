@@ -1,4 +1,17 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateLigasDto } from './create-ligas.dto';
+// src/ligas/dto/update-ligas.dto.ts
 
-export class UpdateLigasDto extends PartialType(CreateLigasDto) {}
+import { IsOptional, IsString } from 'class-validator'; // <-- CORRIGIDO AQUI
+
+export class UpdateLigasDto {
+  @IsString()
+  @IsOptional()
+  nome_liga?: string;
+
+  @IsString()
+  @IsOptional()
+  nome_turma?: string;
+
+  @IsString()
+  @IsOptional()
+  nome_escola?: string;
+}

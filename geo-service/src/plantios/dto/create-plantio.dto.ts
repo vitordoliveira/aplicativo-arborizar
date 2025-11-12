@@ -18,9 +18,4 @@ export class CreatePlantioDto {
   @IsNumber({}, { message: 'O id_especie deve ser um número.' })
   @IsNotEmpty({ message: 'O id_especie não pode estar vazio.' })
   id_especie: number;
-
-  // --- CAMPO ADICIONADO ---
-  @IsNumber({}, { message: 'O id_aluno deve ser um número.' })
-  @IsNotEmpty({ message: 'O id_aluno não pode estar vazio.' })
-  id_aluno: number;
 }

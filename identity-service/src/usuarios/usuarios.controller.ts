@@ -14,8 +14,11 @@ import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { AddPontosDto } from './dto/add-pontos.dto';
 import { Public } from '../auth/decorators/public.decorator';
-import { Roles } from '../auth/decorators/roles.decorator'; // 1. IMPORTAR Roles
-import { Role } from '../common/enums/role.enum'; // 2. IMPORTAR Role
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../common/enums/role.enum';
+import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { User } from '../auth/decorators/user.decorator';
+import { JwtPayload } from '../auth/jwt-payload.interface';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -27,15 +30,35 @@ export class UsuariosController {
     return this.usuariosService.create(createUsuarioDto);
   }
 
-  // --- ROTA ATUALIZADA ---
-  // 3. APLICAR O DECORATOR DE PAPEL
-  // Esta rota agora SÓ pode ser acessada por usuários com o papel 'admin'
+  @Patch('me')
+  updateMyProfile(
+    @Body() updateUsuarioDto: UpdateUsuarioDto,
+    @User() usuarioLogado: JwtPayload,
+  ) {
+    return this.usuariosService.update(usuarioLogado.sub, updateUsuarioDto);
+  }
+
+  // --- O ENDPOINT QUE FALTAVA ESTÁ AQUI ---
+  /**
+   * Retorna o perfil do usuário logado (baseado no token JWT)
+   */
+  @Get('me')
+  getMyProfile(@User() usuarioLogado: JwtPayload) {
+    // Reutiliza o 'findOne' com o ID do token (payload.sub)
+    return this.usuariosService.findOne(usuarioLogado.sub);
+  }
+  // --- FIM DO NOVO ENDPOINT ---
+
   @Roles(Role.Admin)
   @Get()
   findAll() {
     return this.usuariosService.findAll();
   }
 
+  /**
+   * ATENÇÃO: Esta rota GET /:id agora funciona,
+   * mas 'me' será capturado pela rota @Get('me') primeiro.
+   */
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usuariosService.findOne(id);

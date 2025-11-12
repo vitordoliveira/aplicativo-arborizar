@@ -1,55 +1,106 @@
-// gamification-service/src/events/events.controller.ts
+// src/events/events.controller.ts
 
-import { Controller } from '@nestjs/common';
+import { Controller, Injectable, NotFoundException } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { PlantioRegistradoPayload } from './payloads/plantio-registrado.payload';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
+import { MissoesService } from '../missoes/missoes.service';
+import { MissoesConcluidasService } from '../missoes-concluidas/missoes-concluidas.service';
+import { Missao } from '../missoes/entities/missao.entity';
 
+@Injectable()
 @Controller()
 export class EventsController {
-  constructor(private readonly httpService: HttpService) {}
+  private readonly ID_MISSAO_PRIMEIRO_PLANTIO = 1;
+
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly missoesService: MissoesService,
+    private readonly missoesConcluidasService: MissoesConcluidasService,
+  ) {}
 
   @EventPattern('plantio_registrado')
   async handlePlantioRegistrado(@Payload() data: PlantioRegistradoPayload) {
     console.log('--- Evento Recebido: plantio_registrado ---');
-    console.log('Dados do plantio:', data.plantio);
+    const idAluno = data.plantio.id_aluno;
+    const authToken = data.authToken; // 1. PEGAR O TOKEN DA MENSAGEM
+
+    if (!authToken) {
+      console.error('Erro: Evento recebido sem authToken. Abortando.');
+      return;
+    }
+
+    // ... (A lógica de verificação da missão continua a mesma) ...
+    const jaCompletou = await this.missoesConcluidasService.jaCompletou(
+      idAluno,
+      this.ID_MISSAO_PRIMEIRO_PLANTIO,
+    );
+
+    if (jaCompletou) {
+      console.log(
+        `Aluno ${idAluno} já completou a Missão 1. Nenhum ponto adicionado.`,
+      );
+      return;
+    }
+
+    let missao: Missao;
+    try {
+      missao = await this.missoesService.findOne(
+        this.ID_MISSAO_PRIMEIRO_PLANTIO,
+      );
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        console.error(
+          `ERRO: A Missão com ID #${this.ID_MISSAO_PRIMEIRO_PLANTIO} não existe no banco!`,
+        );
+        return;
+      }
+      throw error;
+    }
 
     const recompensa = {
-      pontos: 10,
-      xp: 20,
+      pontos: missao.pontos_recompensa,
+      xp: missao.xp_recompensa,
     };
 
-    const idAluno = data.plantio.id_aluno;
     const url = `http://localhost:8081/usuarios/${idAluno}/pontos`;
-
-    console.log(`Enviando requisição PATCH para: ${url}`);
+    console.log(
+      `Enviando ${recompensa.pontos} pontos e ${recompensa.xp} XP para ${url}`,
+    );
 
     try {
-      const response = await firstValueFrom(
-        this.httpService.patch(url, recompensa).pipe(
-          catchError((error: AxiosError) => {
-            console.error(
-              'Erro ao chamar o identity-service:',
-              error.response?.data,
-            );
-            throw new Error(
-              'Ocorreu um erro ao comunicar com o serviço de identidade.',
-            );
-          }),
-        ),
+      // --- 2. ATUALIZAR A CHAMADA HTTP ---
+      await firstValueFrom(
+        this.httpService
+          .patch(url, recompensa, {
+            headers: {
+              Authorization: `Bearer ${authToken}`, // 3. ADICIONAR O TOKEN AQUI
+            },
+          })
+          .pipe(
+            catchError((error: AxiosError) => {
+              console.error(
+                'Erro ao chamar o identity-service:',
+                error.response?.data,
+              );
+              throw new Error(
+                'Ocorreu um erro ao comunicar com o serviço de identidade.',
+              );
+            }),
+          ),
       );
+      // --- FIM DA ATUALIZAÇÃO ---
 
-      console.log('Pontos adicionados com sucesso!', response.data);
+      await this.missoesConcluidasService.registrarConclusao(idAluno, missao);
+      console.log(
+        `Missão #${missao.id_missao} registrada e pontos adicionados com sucesso para o Aluno ${idAluno}!`,
+      );
     } catch (error) {
-      // --- A CORREÇÃO ESTÁ AQUI ---
-      // Verificamos se o erro capturado é de fato uma instância de Error
       if (error instanceof Error) {
-        // Se for, podemos acessar a propriedade .message com segurança
         console.error(error.message);
       } else {
-        // Se não for, logamos o erro desconhecido de forma segura
         console.error('Um erro desconhecido foi capturado', error);
       }
     }
