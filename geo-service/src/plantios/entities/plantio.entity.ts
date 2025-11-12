@@ -27,6 +27,11 @@ export class Plantio {
   @Column({ type: 'decimal', precision: 11, scale: 8 })
   longitude: number;
 
+  // --- CAMPO ADICIONADO ---
+  // Guarda o ID do aluno que realizou o plantio.
+  @Column({ type: 'int' })
+  id_aluno: number;
+
   @ManyToOne(() => Especie)
   @JoinColumn({ name: 'id_especie_fk' })
   especie: Especie;

@@ -5,13 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuariosService } from './usuarios.service';
 import { UsuariosController } from './usuarios.controller';
 import { Usuario } from './entities/usuario.entity';
-import { Aluno } from './entities/aluno.entity'; // 1. IMPORTAR
-import { Professor } from './entities/professor.entity'; // 2. IMPORTAR
+import { Aluno } from './entities/aluno.entity';
+import { Professor } from './entities/professor.entity';
+import { Admin } from './entities/admin.entity'; // 1. IMPORTAR
 
 @Module({
-  // 3. Adicionar as novas entidades ao array
-  imports: [TypeOrmModule.forFeature([Usuario, Aluno, Professor])],
+  // 2. ADICIONAR 'Admin' AO ARRAY
+  imports: [TypeOrmModule.forFeature([Usuario, Aluno, Professor, Admin])],
   controllers: [UsuariosController],
   providers: [UsuariosService],
+  exports: [UsuariosService],
 })
 export class UsuariosModule {}

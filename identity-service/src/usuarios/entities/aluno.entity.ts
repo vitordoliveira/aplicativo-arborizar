@@ -1,12 +1,16 @@
 // src/usuarios/entities/aluno.entity.ts
 
-import { ChildEntity, Column } from 'typeorm';
+import { ChildEntity, Column, ManyToMany } from 'typeorm';
 import { Usuario } from './usuario.entity';
+import { Liga } from '../../ligas/entities/liga.entity'; // 1. IMPORTAR
 
-// @ChildEntity('aluno') diz ao TypeORM que quando o campo 'tipo' for 'aluno',
-// ele deve criar uma instância desta classe.
 @ChildEntity('aluno')
 export class Aluno extends Usuario {
-  @Column({ type: 'varchar', length: 20, unique: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   matricula: string;
+
+  // --- RELACIONAMENTO COM LIGA ---
+  // Muitos Alunos podem estar em Muitas Ligas
+  @ManyToMany(() => Liga, (liga) => liga.alunos)
+  ligas: Liga[]; // 2. ADICIONAR
 }

@@ -11,7 +11,7 @@ import { MonitoramentosModule } from './monitoramentos/monitoramentos.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5433,
+      port: 5800,
       username: 'arborizar_user',
       password: '4r80r1z4r', // Lembre-se de usar sua senha real
       database: 'arborizar_db',

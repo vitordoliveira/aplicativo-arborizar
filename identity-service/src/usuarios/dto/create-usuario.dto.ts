@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsIn,
   IsOptional,
+  MinLength,
 } from 'class-validator';
 
 export class CreateUsuarioDto {
@@ -17,18 +18,22 @@ export class CreateUsuarioDto {
   @IsNotEmpty({ message: 'O e-mail não pode estar vazio.' })
   email: string;
 
-  @IsIn(['aluno', 'professor'], {
-    message: 'O tipo deve ser "aluno" ou "professor".',
+  @IsString()
+  @IsNotEmpty({ message: 'A senha não pode estar vazia.' })
+  @MinLength(8, { message: 'A senha deve ter no mínimo 8 caracteres.' })
+  password: string;
+
+  // --- A CORREÇÃO ESTÁ AQUI ---
+  @IsIn(['aluno', 'professor', 'admin'], {
+    message: 'O tipo deve ser "aluno", "professor" ou "admin".',
   })
   @IsNotEmpty({ message: 'O tipo de usuário é obrigatório.' })
   tipo: string;
 
-  // Campo opcional para alunos
   @IsOptional()
   @IsString()
   matricula?: string;
 
-  // Campo opcional para professores
   @IsOptional()
   @IsString()
   disciplina?: string;
