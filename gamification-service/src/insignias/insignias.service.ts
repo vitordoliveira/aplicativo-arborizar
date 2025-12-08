@@ -1,5 +1,3 @@
-// src/insignias/insignias.service.ts
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateInsigniaDto } from './dto/create-insignia.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,8 +20,6 @@ export class InsigniasService {
   findAll(): Promise<Insignia[]> {
     return this.insigniaRepository.find();
   }
-
-  // --- MÉTODOS NOVOS ADICIONADOS ---
 
   async findOne(id: number): Promise<Insignia> {
     const insignia = await this.insigniaRepository.findOneBy({

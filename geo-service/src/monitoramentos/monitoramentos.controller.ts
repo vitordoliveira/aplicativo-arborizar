@@ -1,9 +1,6 @@
-// src/monitoramentos/monitoramentos.controller.ts
-
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { MonitoramentosService } from './monitoramentos.service';
 import { CreateMonitoramentoDto } from './dto/create-monitoramento.dto';
-// A importação do UpdateMonitoramentoDto foi removida
 
 @Controller('monitoramentos')
 export class MonitoramentosController {
@@ -18,6 +15,4 @@ export class MonitoramentosController {
   findAll() {
     return this.monitoramentosService.findAll();
   }
-
-  // Os métodos findOne, update e remove foram removidos daqui
 }

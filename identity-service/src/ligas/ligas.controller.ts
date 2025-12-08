@@ -1,5 +1,3 @@
-// src/ligas/ligas.controller.ts
-
 import {
   Controller,
   Get,
@@ -7,9 +5,9 @@ import {
   Body,
   Patch,
   Param,
-  Delete, // 1. IMPORTAR
+  Delete,
   ParseIntPipe,
-  HttpCode, // 2. IMPORTAR
+  HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { LigasService } from './ligas.service';
@@ -18,7 +16,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
 import { User } from '../auth/decorators/user.decorator';
 import { JwtPayload } from '../auth/jwt-payload.interface';
-import { UpdateLigasDto } from './dto/update-ligas.dto'; // 3. IMPORTAR
+import { UpdateLigasDto } from './dto/update-ligas.dto';
 
 @Controller('ligas')
 export class LigasController {
@@ -47,10 +45,8 @@ export class LigasController {
     return this.ligasService.adicionarAluno(idLiga, usuarioLogado.sub);
   }
 
-  // --- MÉTODOS NOVOS ADICIONADOS ---
-
   @Patch(':id')
-  @Roles(Role.Professor) // 4. Só professores podem tentar atualizar
+  @Roles(Role.Professor)
   update(
     @Param('id', ParseIntPipe) idLiga: number,
     @Body() updateLigasDto: UpdateLigasDto,
@@ -60,7 +56,7 @@ export class LigasController {
   }
 
   @Delete(':id')
-  @Roles(Role.Professor) // 5. Só professores podem tentar apagar
+  @Roles(Role.Professor)
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(
     @Param('id', ParseIntPipe) idLiga: number,

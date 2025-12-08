@@ -1,5 +1,3 @@
-// src/missoes/missoes.controller.ts
-
 import {
   Controller,
   Get,
@@ -24,27 +22,25 @@ export class MissoesController {
   constructor(private readonly missoesService: MissoesService) {}
 
   @Post()
-  @Roles(Role.Admin) // 1. Protegido: Só Admins podem criar
+  @Roles(Role.Admin)
   create(@Body() createMissaoDto: CreateMissaoDto) {
     return this.missoesService.create(createMissaoDto);
   }
 
   @Get()
-  @Public() // 2. Deixamos público para o App React Native poder listar
+  @Public()
   findAll() {
     return this.missoesService.findAll();
   }
 
-  // --- MÉTODOS NOVOS ADICIONADOS ---
-
   @Get(':id')
-  @Public() // 3. Deixamos público para o App poder ver detalhes
+  @Public()
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.missoesService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles(Role.Admin) // 4. Protegido: Só Admins podem atualizar
+  @Roles(Role.Admin)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMissaoDto: UpdateMissaoDto,
@@ -53,8 +49,8 @@ export class MissoesController {
   }
 
   @Delete(':id')
-  @Roles(Role.Admin) // 5. Protegido: Só Admins podem deletar
-  @HttpCode(HttpStatus.NO_CONTENT) // Retorna 204 No Content (sucesso sem corpo)
+  @Roles(Role.Admin)
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.missoesService.remove(id);
   }

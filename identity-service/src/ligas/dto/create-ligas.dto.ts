@@ -1,5 +1,3 @@
-// src/ligas/dto/create-ligas.dto.ts
-
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateLigasDto {

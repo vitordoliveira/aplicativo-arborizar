@@ -1,5 +1,3 @@
-// src/especies/dto/update-especie.dto.ts
-
 import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateEspecieDto {

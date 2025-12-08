@@ -1,5 +1,3 @@
-// src/ligas/dto/update-ligas.dto.ts
-
 import { IsOptional, IsString } from 'class-validator'; // <-- CORRIGIDO AQUI
 
 export class UpdateLigasDto {

@@ -1,5 +1,3 @@
-// src/especies/especies.service.ts
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEspecieDto } from './dto/create-especie.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,8 +20,6 @@ export class EspeciesService {
   findAll(): Promise<Especie[]> {
     return this.especieRepository.find();
   }
-
-  // --- MÉTODOS NOVOS ADICIONADOS ---
 
   async findOne(id: number): Promise<Especie> {
     const especie = await this.especieRepository.findOneBy({ id_especie: id });

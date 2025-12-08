@@ -1,5 +1,3 @@
-// src/especies/especies.controller.ts
-
 import {
   Controller,
   Get,
@@ -24,27 +22,25 @@ export class EspeciesController {
   constructor(private readonly especiesService: EspeciesService) {}
 
   @Post()
-  @Roles(Role.Admin) // 1. Protegido: Só Admins podem criar
+  @Roles(Role.Admin)
   create(@Body() createEspecieDto: CreateEspecieDto) {
     return this.especiesService.create(createEspecieDto);
   }
 
   @Get()
-  @Public() // 2. Deixamos público para o App React Native poder listar
+  @Public()
   findAll() {
     return this.especiesService.findAll();
   }
 
-  // --- MÉTODOS NOVOS ADICIONADOS ---
-
   @Get(':id')
-  @Public() // 3. Deixamos público para o App poder ver detalhes
+  @Public()
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.especiesService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles(Role.Admin) // 4. Protegido: Só Admins podem atualizar
+  @Roles(Role.Admin)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateEspecieDto: UpdateEspecieDto,
@@ -53,7 +49,7 @@ export class EspeciesController {
   }
 
   @Delete(':id')
-  @Roles(Role.Admin) // 5. Protegido: Só Admins podem deletar
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.especiesService.remove(id);

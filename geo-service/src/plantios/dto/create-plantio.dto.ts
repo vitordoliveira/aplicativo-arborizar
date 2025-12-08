@@ -1,5 +1,3 @@
-// src/plantios/dto/create-plantio.dto.ts
-
 import { IsNotEmpty, IsNumber, IsUrl } from 'class-validator';
 
 export class CreatePlantioDto {

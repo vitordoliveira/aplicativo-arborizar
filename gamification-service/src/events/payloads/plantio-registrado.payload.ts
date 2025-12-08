@@ -1,5 +1,3 @@
-// src/events/payloads/plantio-registrado.payload.ts
-
 export class PlantioRegistradoPayload {
   plantio: {
     id_plantio: number;
@@ -9,5 +7,5 @@ export class PlantioRegistradoPayload {
     longitude: number;
     id_aluno: number;
   };
-  authToken: string; // Adiciona o token
+  authToken: string;
 }

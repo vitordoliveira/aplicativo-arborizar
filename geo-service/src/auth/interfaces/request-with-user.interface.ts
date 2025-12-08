@@ -1,12 +1,6 @@
-// src/auth/interfaces/request-with-user.interface.ts
-
 import { Request } from 'express';
-// Não precisamos mais do Role enum aqui
+import { JwtPayload } from '../jwt-payload.interface'; // SEM .ts
 
 export interface RequestWithUser extends Request {
-  user: {
-    id_usuario: number;
-    email: string;
-    tipo: string; // O tipo é uma 'string', não um 'Role'.
-  };
+  user: JwtPayload;
 }

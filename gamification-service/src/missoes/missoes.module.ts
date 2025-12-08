@@ -1,5 +1,3 @@
-// src/missoes/missoes.module.ts
-
 import { Module } from '@nestjs/common';
 import { MissoesService } from './missoes.service';
 import { MissoesController } from './missoes.controller';
@@ -10,6 +8,6 @@ import { Missao } from './entities/missao.entity';
   imports: [TypeOrmModule.forFeature([Missao])],
   controllers: [MissoesController],
   providers: [MissoesService],
-  exports: [MissoesService], // 1. EXPORTE O SERVIÇO
+  exports: [MissoesService],
 })
 export class MissoesModule {}

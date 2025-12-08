@@ -1,5 +1,3 @@
-// src/missoes-concluidas/entities/missoes-concluida.entity.ts
-
 import { Missao } from '../../missoes/entities/missao.entity';
 import {
   CreateDateColumn,

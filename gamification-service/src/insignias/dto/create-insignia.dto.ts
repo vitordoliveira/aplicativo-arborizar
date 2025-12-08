@@ -1,5 +1,3 @@
-// src/insignias/dto/create-insignia.dto.ts
-
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 
 export class CreateInsigniaDto {

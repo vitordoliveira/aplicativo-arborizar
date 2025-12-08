@@ -1,5 +1,3 @@
-// src/monitoramentos/dto/create-monitoramento.dto.ts
-
 import {
   IsNotEmpty,
   IsNumber,
@@ -14,10 +12,9 @@ export class CreateMonitoramentoDto {
   foto_url: string;
 
   @IsString()
-  @IsOptional() // As observações são opcionais
+  @IsOptional()
   observacoes?: string;
 
-  // Precisamos saber a qual plantio este monitoramento pertence.
   @IsNumber({}, { message: 'O id_plantio deve ser um número.' })
   @IsNotEmpty({ message: 'O id_plantio não pode estar vazio.' })
   id_plantio: number;

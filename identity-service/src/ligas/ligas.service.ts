@@ -1,5 +1,3 @@
-// src/ligas/ligas.service.ts
-
 import {
   Injectable,
   NotFoundException,
@@ -11,7 +9,7 @@ import { Liga } from './entities/liga.entity';
 import { Repository } from 'typeorm';
 import { Professor } from '../usuarios/entities/professor.entity';
 import { Aluno } from '../usuarios/entities/aluno.entity';
-import { UpdateLigasDto } from './dto/update-ligas.dto'; // 1. IMPORTAR
+import { UpdateLigasDto } from './dto/update-ligas.dto';
 
 @Injectable()
 export class LigasService {
@@ -73,14 +71,11 @@ export class LigasService {
     return liga;
   }
 
-  // --- MÉTODOS NOVOS ADICIONADOS ---
-
   async update(
     idLiga: number,
     updateLigasDto: UpdateLigasDto,
     idUsuarioLogado: number,
   ): Promise<Liga> {
-    // 1. Busca a liga e quem é o líder
     const liga = await this.ligaRepository.findOne({
       where: { id_liga: idLiga },
       relations: ['lider'],
@@ -89,20 +84,17 @@ export class LigasService {
       throw new NotFoundException(`Liga com ID #${idLiga} não encontrada.`);
     }
 
-    // 2. REGRA DE NEGÓCIO: Só o professor que criou a liga pode editá-la
     if (liga.lider.id_usuario !== idUsuarioLogado) {
       throw new UnauthorizedException(
         'Você não tem permissão para editar esta liga.',
       );
     }
 
-    // 3. Aplica as mudanças e salva
     const ligaAtualizada = this.ligaRepository.merge(liga, updateLigasDto);
     return this.ligaRepository.save(ligaAtualizada);
   }
 
   async remove(idLiga: number, idUsuarioLogado: number): Promise<void> {
-    // 1. Busca a liga e quem é o líder
     const liga = await this.ligaRepository.findOne({
       where: { id_liga: idLiga },
       relations: ['lider'],
@@ -111,14 +103,12 @@ export class LigasService {
       throw new NotFoundException(`Liga com ID #${idLiga} não encontrada.`);
     }
 
-    // 2. REGRA DE NEGÓCIO: Só o professor que criou a liga pode apagá-la
     if (liga.lider.id_usuario !== idUsuarioLogado) {
       throw new UnauthorizedException(
         'Você não tem permissão para apagar esta liga.',
       );
     }
 
-    // 3. Apaga a liga
     await this.ligaRepository.remove(liga);
   }
 }

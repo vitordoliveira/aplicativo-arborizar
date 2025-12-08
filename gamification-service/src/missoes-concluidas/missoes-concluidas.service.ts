@@ -1,5 +1,3 @@
-// src/missoes-concluidas/missoes-concluidas.service.ts
-
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MissaoConcluida } from './entities/missoes-concluida.entity';
@@ -13,9 +11,6 @@ export class MissoesConcluidasService {
     private readonly repository: Repository<MissaoConcluida>,
   ) {}
 
-  /**
-   * Verifica se um aluno já completou uma missão específica.
-   */
   async jaCompletou(idAluno: number, idMissao: number): Promise<boolean> {
     const count = await this.repository.count({
       where: {
@@ -26,9 +21,6 @@ export class MissoesConcluidasService {
     return count > 0;
   }
 
-  /**
-   * Registra que um aluno completou uma missão.
-   */
   async registrarConclusao(
     idAluno: number,
     missao: Missao,

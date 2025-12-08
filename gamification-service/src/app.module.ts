@@ -1,5 +1,3 @@
-// gamification-service/src/app.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MissoesModule } from './missoes/missoes.module';
@@ -17,14 +15,14 @@ import { MissoesConcluidasModule } from './missoes-concluidas/missoes-concluidas
     PassportModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../.env', // Aponta para o .env correto
+      envFilePath: '../.env',
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
       port: 5800,
       username: 'arborizar_user',
-      password: '4r80r1z4r', // Sua senha
+      password: '4r80r1z4r',
       database: 'arborizar_db',
       synchronize: true,
       autoLoadEntities: true,
@@ -34,6 +32,6 @@ import { MissoesConcluidasModule } from './missoes-concluidas/missoes-concluidas
     MissoesConcluidasModule,
   ],
   controllers: [EventsController],
-  providers: [JwtStrategy], // Registra a estratégia como um provider
+  providers: [JwtStrategy],
 })
 export class AppModule {}

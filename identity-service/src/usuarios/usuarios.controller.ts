@@ -1,5 +1,3 @@
-// src/usuarios/usuarios.controller.ts
-
 import {
   Controller,
   Get,
@@ -9,7 +7,9 @@ import {
   Delete,
   ParseIntPipe,
   Patch,
+  Req,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { AddPontosDto } from './dto/add-pontos.dto';
@@ -38,16 +38,10 @@ export class UsuariosController {
     return this.usuariosService.update(usuarioLogado.sub, updateUsuarioDto);
   }
 
-  // --- O ENDPOINT QUE FALTAVA ESTÁ AQUI ---
-  /**
-   * Retorna o perfil do usuário logado (baseado no token JWT)
-   */
   @Get('me')
   getMyProfile(@User() usuarioLogado: JwtPayload) {
-    // Reutiliza o 'findOne' com o ID do token (payload.sub)
     return this.usuariosService.findOne(usuarioLogado.sub);
   }
-  // --- FIM DO NOVO ENDPOINT ---
 
   @Roles(Role.Admin)
   @Get()
@@ -55,10 +49,6 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
-  /**
-   * ATENÇÃO: Esta rota GET /:id agora funciona,
-   * mas 'me' será capturado pela rota @Get('me') primeiro.
-   */
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usuariosService.findOne(id);
@@ -75,5 +65,19 @@ export class UsuariosController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usuariosService.remove(+id);
+  }
+
+  @Get('ranking/global')
+  getRankingGlobal(@Req() req: Request) {
+    const authToken = req.headers['authorization'] || '';
+    return this.usuariosService.getRankingGlobal(authToken);
+  }
+
+  @Get('me/posicao')
+  async getRankingPosition(@User() usuarioLogado: JwtPayload) {
+    const posicao = await this.usuariosService.getRankingPosition(
+      usuarioLogado.sub,
+    );
+    return { posicao: posicao };
   }
 }

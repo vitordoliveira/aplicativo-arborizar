@@ -1,10 +1,8 @@
-// geo-service/src/auth/strategies/jwt.strategy.ts
-
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { JwtPayload } from '../jwt-payload.interface'; // A interface que espera 'sub'
+import { JwtPayload } from '../jwt-payload.interface'; // SEM .ts
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -22,9 +20,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // --- A CORREÇÃO ESTÁ AQUI ---
-  // Retornamos o payload original, que contém '.sub',
-  // como o nosso PlantiosController espera.
   validate(payload: JwtPayload): JwtPayload {
     return payload;
   }

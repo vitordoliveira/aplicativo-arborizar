@@ -1,5 +1,3 @@
-// src/ligas/entities/liga.entity.ts
-
 import { Aluno } from '../../usuarios/entities/aluno.entity';
 import { Professor } from '../../usuarios/entities/professor.entity';
 import {
@@ -26,17 +24,13 @@ export class Liga {
   @Column({ type: 'varchar', length: 200 })
   nome_escola: string;
 
-  // --- RELACIONAMENTO COM PROFESSOR (Líder) ---
-  // Muitas Ligas podem pertencer a UM Professor
   @ManyToOne(() => Professor, (professor) => professor.ligasLideradas)
   @JoinColumn({ name: 'id_professor_lider_fk' })
   lider: Professor;
 
-  // --- RELACIONAMENTO COM ALUNO (Membros) ---
-  // Muitas Ligas podem ter Muitos Alunos
   @ManyToMany(() => Aluno, (aluno) => aluno.ligas)
   @JoinTable({
-    name: 'liga_alunos', // Nome da tabela de junção
+    name: 'liga_alunos',
     joinColumn: { name: 'id_liga_fk', referencedColumnName: 'id_liga' },
     inverseJoinColumn: {
       name: 'id_aluno_fk',

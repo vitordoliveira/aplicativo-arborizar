@@ -1,5 +1,3 @@
-// src/especies/especies.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EspeciesService } from './especies.service';
@@ -10,6 +8,6 @@ import { Especie } from './entities/especie.entity';
   imports: [TypeOrmModule.forFeature([Especie])],
   controllers: [EspeciesController],
   providers: [EspeciesService],
-  exports: [EspeciesService], // <-- ADICIONE ESTA LINHA
+  exports: [EspeciesService],
 })
 export class EspeciesModule {}

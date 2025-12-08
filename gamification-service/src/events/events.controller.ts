@@ -1,5 +1,3 @@
-// src/events/events.controller.ts
-
 import { Controller, Injectable, NotFoundException } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { PlantioRegistradoPayload } from './payloads/plantio-registrado.payload';
@@ -25,23 +23,20 @@ export class EventsController {
   async handlePlantioRegistrado(@Payload() data: PlantioRegistradoPayload) {
     console.log('--- Evento Recebido: plantio_registrado ---');
     const idAluno = data.plantio.id_aluno;
-    const authToken = data.authToken; // 1. PEGAR O TOKEN DA MENSAGEM
+    const authToken = data.authToken;
 
     if (!authToken) {
       console.error('Erro: Evento recebido sem authToken. Abortando.');
       return;
     }
 
-    // ... (A lógica de verificação da missão continua a mesma) ...
     const jaCompletou = await this.missoesConcluidasService.jaCompletou(
       idAluno,
       this.ID_MISSAO_PRIMEIRO_PLANTIO,
     );
 
     if (jaCompletou) {
-      console.log(
-        `Aluno ${idAluno} já completou a Missão 1. Nenhum ponto adicionado.`,
-      );
+      console.log(`Aluno ${idAluno} já completou a Missão 1.`);
       return;
     }
 
@@ -53,7 +48,7 @@ export class EventsController {
     } catch (error) {
       if (error instanceof NotFoundException) {
         console.error(
-          `ERRO: A Missão com ID #${this.ID_MISSAO_PRIMEIRO_PLANTIO} não existe no banco!`,
+          `ERRO: A Missão #${this.ID_MISSAO_PRIMEIRO_PLANTIO} não existe!`,
         );
         return;
       }
@@ -66,37 +61,24 @@ export class EventsController {
     };
 
     const url = `http://localhost:8081/usuarios/${idAluno}/pontos`;
-    console.log(
-      `Enviando ${recompensa.pontos} pontos e ${recompensa.xp} XP para ${url}`,
-    );
+    console.log(`Enviando ${recompensa.pontos} pontos para ${url}`);
 
     try {
-      // --- 2. ATUALIZAR A CHAMADA HTTP ---
       await firstValueFrom(
         this.httpService
           .patch(url, recompensa, {
-            headers: {
-              Authorization: `Bearer ${authToken}`, // 3. ADICIONAR O TOKEN AQUI
-            },
+            headers: { Authorization: `Bearer ${authToken}` },
           })
           .pipe(
             catchError((error: AxiosError) => {
-              console.error(
-                'Erro ao chamar o identity-service:',
-                error.response?.data,
-              );
-              throw new Error(
-                'Ocorreu um erro ao comunicar com o serviço de identidade.',
-              );
+              console.error('Erro ao chamar identity:', error.response?.data);
+              throw new Error('Erro de comunicação com identity-service.');
             }),
           ),
       );
-      // --- FIM DA ATUALIZAÇÃO ---
 
       await this.missoesConcluidasService.registrarConclusao(idAluno, missao);
-      console.log(
-        `Missão #${missao.id_missao} registrada e pontos adicionados com sucesso para o Aluno ${idAluno}!`,
-      );
+      console.log(`Missão #${missao.id_missao} registrada com sucesso!`);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);

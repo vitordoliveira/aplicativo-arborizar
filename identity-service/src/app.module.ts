@@ -1,5 +1,3 @@
-// src/app.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuariosModule } from './usuarios/usuarios.module';
@@ -16,9 +14,9 @@ import { LigasModule } from './ligas/ligas.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5800, // Correto
+      port: 5800,
       username: 'arborizar_user',
-      password: '4r80r1z4r', // Sua senha
+      password: '4r80r1z4r',
       database: 'arborizar_db',
       synchronize: true,
       autoLoadEntities: true,

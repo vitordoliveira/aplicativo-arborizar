@@ -1,5 +1,3 @@
-// src/missoes/dto/update-missao.dto.ts
-
 import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class UpdateMissaoDto {

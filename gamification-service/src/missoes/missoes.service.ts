@@ -1,11 +1,9 @@
-// src/missoes/missoes.service.ts
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMissaoDto } from './dto/create-missao.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Missao } from './entities/missao.entity';
 import { Repository } from 'typeorm';
-import { UpdateMissaoDto } from './dto/update-missao.dto'; // 1. IMPORTAR
+import { UpdateMissaoDto } from './dto/update-missao.dto';
 
 @Injectable()
 export class MissoesService {
@@ -23,8 +21,6 @@ export class MissoesService {
     return this.missaoRepository.find();
   }
 
-  // --- MÉTODOS NOVOS ADICIONADOS ---
-
   async findOne(id: number): Promise<Missao> {
     const missao = await this.missaoRepository.findOneBy({ id_missao: id });
     if (!missao) {
@@ -34,7 +30,6 @@ export class MissoesService {
   }
 
   async update(id: number, updateMissaoDto: UpdateMissaoDto): Promise<Missao> {
-    // Carrega a missão existente e aplica as alterações do DTO
     const missao = await this.missaoRepository.preload({
       id_missao: id,
       ...updateMissaoDto,

@@ -1,5 +1,3 @@
-// src/especies/dto/create-especie.dto.ts
-
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateEspecieDto {
@@ -12,6 +10,6 @@ export class CreateEspecieDto {
   nome_cientifico: string;
 
   @IsString()
-  @IsOptional() // A descrição é opcional na criação
+  @IsOptional()
   descricao?: string;
 }

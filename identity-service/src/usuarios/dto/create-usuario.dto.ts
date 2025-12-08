@@ -1,5 +1,3 @@
-// src/usuarios/dto/create-usuario.dto.ts
-
 import {
   IsString,
   IsEmail,
@@ -23,7 +21,6 @@ export class CreateUsuarioDto {
   @MinLength(8, { message: 'A senha deve ter no mínimo 8 caracteres.' })
   password: string;
 
-  // --- A CORREÇÃO ESTÁ AQUI ---
   @IsIn(['aluno', 'professor', 'admin'], {
     message: 'O tipo deve ser "aluno", "professor" ou "admin".',
   })
